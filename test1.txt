@@ -1,0 +1,6 @@
+show usbserial
+set usbserial 2
+full
+move ahead 40
+passive
+dock
