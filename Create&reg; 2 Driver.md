@@ -1,5 +1,7 @@
-# iRobot Create&reg; 2 Driver
+# iRobot Create&reg; 2 Driver Program
 Create2Driver.py is a small program for testing the most awesome Create2 robotics system.  The idea is to provide a simple command line easily run over ssh to perform basic commands.
+
+***NOTE: This is not a 'driver' in the OS sense.  it is a program that lets the user drive the robot around with simple commands.***
 
 The Create2 is a powerful robot constructed from refurbished Roomba&reg; systems from iRobot.  You can learn more about them [here](http://www.irobot.com/About-iRobot/STEM/Create-2.aspx).
 
@@ -48,4 +50,78 @@ If you are using a pi or arduino to drive the system, they can be powered by he 
 You can start the Create 2 driver program by cloning the source from tis github page, performing the set up instructions above, and then running `python Create2Driver.py`.  This wil give you a command prompt.
 
 ## Define the Serial Port
-After the program is running the first thing you have to do is set the serial port.
+After the program is running the first thing you have to do is set the serial port.  you can query the available usb serial ports with the command `show usbserial`.  This will list the available ports.  on my mac with the FTDI cable plugged in from the Create 2, I get the following:
+
+```
+DEV-JDUMOULIN3:Create2 jdumoulin$ python Create2Driver.py 
+> show usbserial
+command show found
+0 -- /dev/tty.Bluetooth-Incoming-Port
+1 -- /dev/tty.Bluetooth-Modem
+2 -- /dev/tty.usbserial-DA01NVAX
+> 
+```
+From a pi you see something a little different:  Heres and exampe with a pi running to control the Create 2:
+
+```
+DEV-JDUMOULIN3:Create2 jdumoulin$ ssh pi@192.168.0.35
+pi@192.168.0.35's password: 
+ ...
+pi@raspberrypi ~ $ cd Documents/iRobot/
+pi@raspberrypi ~/Documents/iRobot $ python Create2Driver.py 
+> show usbserial
+command show found
+0 -- /dev/ttyUSB0
+> 
+```
+You can then indicate the serial port to use by its index in the list.  so on the pi I type:
+```
+> set usbserial 0
+command set found
+using /dev/ttyUSB0
+> 
+```
+to set up the connection.  Now I can use the various commands to change the state of the robot and move it around.  
+
+## Scripting
+You can type the name of a file after the command line and if there are commands in the file the driver will read and execute each command in the order given.  Here is an example from the repo:
+
+```
+pi@raspberrypi ~/Documents/iRobot $ cat test1.txt
+show usbserial
+set usbserial 2
+full
+move ahead 40
+passive
+dock
+pi@raspberrypi ~/Documents/iRobot $ 
+```
+Which can be run by typing:
+
+```
+pi@raspberrypi ~/Documents/iRobot $ python Create2Driver.py test1.txt 
+command show found
+0 -- /dev/ttyUSB0
+command set found
+using /dev/ttyUSB0
+command state found
+command move found
+command state found
+command state found
+pi@raspberrypi ~/Documents/iRobot $ 
+```
+
+
+## To be Continued.  
+I'll be adding more to this as more commands get added.  the current todo list is something like the following:
+
+- Add more commands from the OI Spec.
+- Add a history file
+- Add more sytax to the scripting files (e.g., comments)
+- Include commands that stream data from the device sensors.
+- upload some video of the robot running commands from a connected raspberry pi initiated through ssh from a remote computer.
+- Add a camera to the pi to record video while driving around.  
+
+
+## Finally
+Please clone, fork, enjoy and submit patches, since this code is just barely functional I would appreciate any advice or assistance since robotic is pretty new to me.  
