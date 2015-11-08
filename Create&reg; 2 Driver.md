@@ -89,7 +89,7 @@ You can type the name of a file after the command line and if there are commands
 ```
 pi@raspberrypi ~/Documents/iRobot $ cat test1.txt
 show usbserial
-set usbserial 2
+set usbserial 0
 full
 move ahead 40
 passive
